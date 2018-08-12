@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour {
     public Button tryAgainButton;
     ParticleSystem myParticleSystem;
     ParticleSystem.EmissionModule emissionModule;
+    private AudioSource source;
+    public AudioClip boostSound;
+    public AudioClip crashSound;
 
     private void Awake() {
     gameOverPanel.GetComponent<CanvasRenderer>().SetAlpha(0.0f);
@@ -27,6 +30,8 @@ public class PlayerController : MonoBehaviour {
         tryAgainButton.GetComponent<CanvasRenderer>().SetAlpha(0.0f);
         tryAgainButton.GetComponentInChildren<Text>().GetComponent<CanvasRenderer>().SetAlpha(0.0f);
         tryAgainButton.onClick.AddListener(TryAgain);
+
+        source = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -75,11 +80,15 @@ public class PlayerController : MonoBehaviour {
             crashed = true;
             WallCompressor compressor = GameObject.Find("GameObject").GetComponent<WallCompressor>();
             compressor.shouldMove = false;
-        } if (collision.gameObject.tag == "ring" && collision.collider is BoxCollider) {
+        } 
+        if (collision.gameObject.tag == "ring" && collision.collider is BoxCollider) {
             myParticleSystem.startColor = Color.green;
             emissionModule.rateOverTime = 400;
             Invoke("RevertParticleColor", 2);
             transform.GetComponent<Rigidbody>().AddForceAtPosition(new Vector3(0, 0, 100), new Vector3(0, 0, 0), ForceMode.Impulse);
+            source.PlayOneShot(boostSound);
+        } else {
+            source.PlayOneShot(crashSound);
         }
     }
 
