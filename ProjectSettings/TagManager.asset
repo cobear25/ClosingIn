@@ -6,6 +6,7 @@ TagManager:
   tags:
   - wall
   - ring
+  - music
   layers:
   - Default
   - TransparentFX
